@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: "./apps/nginx-reverse-proxy/Dockerfile"
+    ports:
+      - "80:80"
+    networks:
+      - backend
+    env_file:
+      - .env
+    
+  auth-service:
+    container_name: "auth-service"
+    build:
+      dockerfile: ./apps/auth/Dockerfile
+      context: .
+    env_file:
+      - .env
+    networks:
+      - backend
+
+  mail-service:
+    container_name: "mail-service"
+    build:
+      context: .
+      dockerfile: ./apps/mail-services/Dockerfile
+    env_file:
+      - .env
+    networks:
+      - backend
+
+  extract-service:
+    container_name: "extract-service"
+    build:
+      context: ./apps/extract-service
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    networks:
+      - backend
+
+networks:
+  backend:
